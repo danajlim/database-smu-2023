@@ -1,124 +1,205 @@
-drop database db3;
-create database db3;
-use db3;
+-- ê¸°ì¡´ ë°ì´í„°ë² ì´ìŠ¤ ì‚­ì œ ë° ìƒì„±
+DROP DATABASE db3;
+CREATE DATABASE db3;
+USE db3;
 
-create table company(
-company_name varchar(15) primary key,
-location varchar(4),
-num_employee int);
+-- íšŒì‚¬ í…Œì´ë¸” ìƒì„±
+CREATE TABLE company (
+    company_name VARCHAR(15) PRIMARY KEY,
+    location VARCHAR(4),
+    num_employee INT
+);
 
-create table contact(
-contact_ID varchar(2) primary key,
-international_plan varchar(3),
-voice_mail_plan varchar(3));
+-- ì—°ë½ì²˜ í”Œëœ í…Œì´ë¸” ìƒì„±
+CREATE TABLE contact (
+    contact_ID VARCHAR(2) PRIMARY KEY,
+    international_plan VARCHAR(3),
+    voice_mail_plan VARCHAR(3)
+);
 
-create table customer(
-area_code varchar(3),
-phone_number varchar(9),
-name varchar(10),
-contact_ID varchar(2),
-company_name varchar(15),
-age int,
-salary numeric(7,2),
-primary key(area_code,phone_number),
-foreign key (contact_ID) references contact(contact_ID) on delete cascade on update cascade,
-foreign key (company_name) references company(company_name) on delete cascade on update cascade);
+-- ê³ ê° í…Œì´ë¸” ìƒì„±
+CREATE TABLE customer (
+    area_code VARCHAR(3),
+    phone_number VARCHAR(9),
+    name VARCHAR(10),
+    contact_ID VARCHAR(2),
+    company_name VARCHAR(15),
+    age INT,
+    salary NUMERIC(7,2),
+    PRIMARY KEY(area_code, phone_number),
+    FOREIGN KEY (contact_ID) REFERENCES contact(contact_ID) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (company_name) REFERENCES company(company_name) 
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-create table monthlyusage(
-area_code varchar(3),
-phone_number varchar(9),
-month varchar(3),
-call_min numeric(4,1),
-voice_mail_count int,
-international_call_min numeric(3,1),
-primary key(area_code,phone_number,month),
-foreign key (area_code,phone_number) references customer(area_code,phone_number));
+-- ì›”ë³„ ì‚¬ìš©ëŸ‰ í…Œì´ë¸” ìƒì„±
+CREATE TABLE monthlyusage (
+    area_code VARCHAR(3),
+    phone_number VARCHAR(9),
+    month VARCHAR(10),
+    call_min NUMERIC(4,1),
+    voice_mail_count INT,
+    international_call_min NUMERIC(3,1),
+    PRIMARY KEY(area_code, phone_number, month),
+    FOREIGN KEY (area_code, phone_number) REFERENCES customer(area_code, phone_number)
+);
 
+-- íšŒì‚¬ ë°ì´í„° ì‚½ì…
+INSERT INTO company VALUES ('Coupang', 'ì„œìš¸', 1000);
+INSERT INTO company VALUES ('Hyundai Motor', 'ìš¸ì‚°', 20000);
+INSERT INTO company VALUES ('Kakao', 'ì„±ë‚¨', 5000);
+INSERT INTO company VALUES ('Kakao Bank', 'ì„œìš¸', 100);
+INSERT INTO company VALUES ('naver', 'ì„±ë‚¨', 7000);
+INSERT INTO company VALUES ('SK', 'ì„œìš¸', 10000);
 
+-- ì—°ë½ì²˜ í”Œëœ ë°ì´í„° ì‚½ì…
+INSERT INTO contact VALUES ('C1', 'ìˆìŒ', 'ìˆìŒ');
+INSERT INTO contact VALUES ('C2', 'ì—†ìŒ', 'ì—†ìŒ');
+INSERT INTO contact VALUES ('C3', 'ì—†ìŒ', 'ì—†ìŒ');
+INSERT INTO contact VALUES ('C4', 'ìˆìŒ', 'ìˆìŒ');
+INSERT INTO contact VALUES ('C5', 'ìˆìŒ', 'ìˆìŒ');
+INSERT INTO contact VALUES ('C6', 'ì—†ìŒ', 'ìˆìŒ');
+INSERT INTO contact VALUES ('C7', 'ì—†ìŒ', 'ì—†ìŒ');
+INSERT INTO contact VALUES ('C8', 'ìˆìŒ', 'ìˆìŒ');
+INSERT INTO contact VALUES ('C9', 'ìˆìŒ', 'ì—†ìŒ');
 
+-- ê³ ê° ë°ì´í„° ì‚½ì…
+INSERT INTO customer VALUES ('02', '1111-1111', 'Srinivasan', 'C1', 'SK', 40, 65000);
+INSERT INTO customer VALUES ('02', '1111-1112', 'Wu', 'C2', 'SK', 35, 90000);
+INSERT INTO customer VALUES ('02', '1111-1113', 'Gold', 'C3', 'Coupang', 51, 87000);
+INSERT INTO customer VALUES ('02', '1111-1114', 'Katz', 'C4', 'Coupang', 20, 75000);
+INSERT INTO customer VALUES ('031', '2222-1111', 'Mozart', 'C5', 'Kakao', 26, 40000);
+INSERT INTO customer VALUES ('031', '2222-1112', 'Einstein', 'C6', 'Kakao', 42, 95000);
+INSERT INTO customer VALUES ('031', '2222-1113', 'El Said', 'C7', 'naver', 45, 60000);
+INSERT INTO customer VALUES ('052', '3333-1111', 'Califieri', 'C8', 'Hyundai Motor', 28, 62000);
+INSERT INTO customer VALUES ('052', '3333-1112', 'Singh', 'C9', 'Hyundai Motor', 34, NULL);
 
-insert into company values ('Coupang','¼­¿ï',1000);
-insert into company values ('Hyundai Motor','¿ï»ê',20000);
-insert into company values ('Kakao','°æ±â',5000);
-insert into company values ('Kakao Bank','¼­¿ï',100);
-insert into company values ('naver','°æ±â',7000);
-insert into company values ('SK','¼­¿ï',10000);
+-- ì›”ë³„ ì‚¬ìš© ë°ì´í„° ì‚½ì…
+INSERT INTO monthlyusage VALUES ('02', '1111-1111', '10ì›”', 161.6, 26, 3);
+INSERT INTO monthlyusage VALUES ('02', '1111-1111', '9ì›”', 265.1, 25, 3);
+INSERT INTO monthlyusage VALUES ('02', '1111-1112', '10ì›”', 299.4, 0, 7);
+INSERT INTO monthlyusage VALUES ('02', '1111-1112', '9ì›”', 243.4, 0, 5);
+INSERT INTO monthlyusage VALUES ('02', '1111-1113', '10ì›”', 157.0, 0, 6);
+INSERT INTO monthlyusage VALUES ('02', '1111-1113', '9ì›”', 218.2, 24, 7);
+INSERT INTO monthlyusage VALUES ('02', '1111-1114', '10ì›”', 224.4, 0, 2);
+INSERT INTO monthlyusage VALUES ('02', '1111-1114', '9ì›”', 189.7, 33, 5);
+INSERT INTO monthlyusage VALUES ('031', '2222-1111', '10ì›”', 81.1, 0, 2);
+INSERT INTO monthlyusage VALUES ('031', '2222-1111', '9ì›”', 183.0, 0, 19);
+INSERT INTO monthlyusage VALUES ('031', '2222-1112', '10ì›”', 101.6, 26, 3);
+INSERT INTO monthlyusage VALUES ('031', '2222-1112', '9ì›”', 124.3, 0, 5);
+INSERT INTO monthlyusage VALUES ('031', '2222-1113', '10ì›”', 134.3, 0, 4);
+INSERT INTO monthlyusage VALUES ('031', '2222-1113', '9ì›”', 265.1, 5, 3);
+INSERT INTO monthlyusage VALUES ('052', '3333-1111', '9ì›”', 65.1, 25, 3);
 
-insert into contact values ('C1','¹Ì°¡ÀÔ','¹Ì°¡ÀÔ');
-insert into contact values ('C2','°¡ÀÔ','°¡ÀÔ');
-insert into contact values ('C3','°¡ÀÔ','°¡ÀÔ');
-insert into contact values ('C4','¹Ì°¡ÀÔ','¹Ì°¡ÀÔ');
-insert into contact values ('C5','¹Ì°¡ÀÔ','¹Ì°¡ÀÔ');
-insert into contact values ('C6','°¡ÀÔ','¹Ì°¡ÀÔ');
-insert into contact values ('C7','°¡ÀÔ','°¡ÀÔ');
-insert into contact values ('C8','¹Ì°¡ÀÔ','¹Ì°¡ÀÔ');
-insert into contact values ('C9','¹Ì°¡ÀÔ','°¡ÀÔ');
+-- ì „ì²´ í…Œì´ë¸” ì¡°íšŒ
+SELECT * FROM company;
+SELECT * FROM contact;
+SELECT * FROM customer;
+SELECT * FROM monthlyusage;
 
-insert into customer values ('02','1111-1111','Srinivasan','C1','SK',40,65000);
-insert into customer values ('02','1111-1112','Wu','C2','SK',35,90000);
-insert into customer values ('02','1111-1113','Gold','C3','Coupang',51,87000);
-insert into customer values ('02','1111-1114','Katz','C4','Coupang',20,75000);
-insert into customer values ('031','2222-1111','Mozart','C5','Kakao',26,40000);
-insert into customer values ('031','2222-1112','Einstein','C6','Kakao',42,95000);
-insert into customer values ('031','2222-1113','El Said','C7','naver',45,60000);
-insert into customer values ('052','3333-1111','Califieri','C8','Hyundai Motor',28,62000);
-insert into customer values ('052','3333-1112','Singh','C9','Hyundai Motor',34,null);
+-- ì§ì› ìˆ˜ê°€ 3000ëª… ì´ìƒì¸ íšŒì‚¬ ì¡°íšŒ
+SELECT company_name, location 
+FROM company 
+WHERE num_employee > 3000;
 
+-- ê¸‰ì—¬ ì •ë³´ê°€ ì—†ëŠ” ê³ ê° ì¡°íšŒ
+SELECT name 
+FROM customer 
+WHERE salary IS NULL;
 
-insert into monthlyusage values ('02','1111-1111','10¿ù',161.6,26,3);
-insert into monthlyusage values ('02','1111-1111','9¿ù',265.1,25,3);
-insert into monthlyusage values ('02','1111-1112','10¿ù',299.4,0,7);
-insert into monthlyusage values ('02','1111-1112','9¿ù',243.4,0,5);
-insert into monthlyusage values ('02','1111-1113','10¿ù',157,0,6);
-insert into monthlyusage values ('02','1111-1113','9¿ù',218.2,24,7);
-insert into monthlyusage values ('02','1111-1114','10¿ù',224.4,0,2);
-insert into monthlyusage values ('02','1111-1114','9¿ù',189.7,33,5);
-insert into monthlyusage values ('031','2222-1111','10¿ù',81.1,0,2);
-insert into monthlyusage values ('031','2222-1111','9¿ù',183,0,19);
-insert into monthlyusage values ('031','2222-1112','10¿ù',101.6,26,3);
-insert into monthlyusage values ('031','2222-1112','9¿ù',124.3,0,5);
-insert into monthlyusage values ('031','2222-1113','10¿ù',134.3,0,4);
-insert into monthlyusage values ('031','2222-1113','9¿ù',265.1,5,3);
-insert into monthlyusage values ('052','3333-1111','9¿ù',65.1,25,3);
+-- 'Ka'ë¡œ ì‹œì‘í•˜ëŠ” íšŒì‚¬ì— ì†í•œ ê³ ê° ì¤‘ ë‚˜ì´ ë‚´ë¦¼ì°¨ìˆœ
+SELECT name, age 
+FROM customer 
+WHERE company_name LIKE 'Ka%' 
+ORDER BY age DESC;
 
+-- ê¸‰ì—¬ 8ë§Œ ì´ìƒì´ë©° êµ­ì œì „í™” ê°€ëŠ¥ ê³ ê° ì¡°íšŒ (JOIN)
+SELECT name, area_code, phone_number, salary 
+FROM customer, contact 
+WHERE customer.contact_ID = contact.contact_ID 
+  AND salary >= 80000 
+  AND international_plan = 'ìˆìŒ';
 
-select * from company;
-select * from contact;
-select * from customer;
-select * from monthlyusage;
+-- ìœ„ì™€ ë™ì¼í•˜ì§€ë§Œ NATURAL JOIN ì‚¬ìš©
+SELECT name, area_code, phone_number, salary 
+FROM customer NATURAL JOIN contact 
+WHERE international_plan = 'ìˆìŒ' 
+  AND salary >= 80000;
 
+-- ìŒì„±ì‚¬ì„œí•¨ ìˆìŒ + ì§ì› ìˆ˜ 10000ëª… ì´ìƒì¸ ê³ ê° ì¡°íšŒ
+SELECT name, area_code, phone_number 
+FROM customer 
+NATURAL JOIN company 
+NATURAL JOIN contact 
+WHERE voice_mail_plan = 'ìˆìŒ' 
+  AND num_employee >= 10000;
 
-select company_name,location from company where num_employee>3000;
+-- ê³ ê°ë³„ ì›”ë³„ í†µí™”ëŸ‰ ì§‘ê³„
+SELECT area_code, phone_number, 
+       SUM(call_min), 
+       SUM(international_call_min) 
+FROM customer 
+NATURAL JOIN monthlyusage 
+GROUP BY area_code, phone_number;
 
-select name from customer where salary is null;
+-- í†µí™”ëŸ‰ì´ 400ë¶„ ì´ìƒì¸ ê³ ê°ë§Œ í•„í„°ë§
+SELECT area_code, phone_number, 
+       SUM(call_min), 
+       SUM(international_call_min) 
+FROM customer 
+NATURAL JOIN monthlyusage 
+GROUP BY area_code, phone_number 
+HAVING SUM(call_min) >= 400;
 
-select name,age from customer where company_name like 'Ka%' order by age desc;
+-- ì„œë¸Œì¿¼ë¦¬ ë°©ì‹ìœ¼ë¡œ í†µí™”ëŸ‰ í•„í„°ë§
+SELECT * 
+FROM (
+    SELECT area_code, phone_number, 
+           SUM(call_min), 
+           SUM(international_call_min) 
+    FROM customer 
+    NATURAL JOIN monthlyusage 
+    GROUP BY area_code, phone_number
+) AS A 
+WHERE A.SUM(call_min) >= 400;
 
-select name,area_code,phone_number,salary from customer,contact where customer.contact_ID=contact.contact_ID and salary>=80000 and international_plan='°¡ÀÔ';
+-- íšŒì‚¬ë³„ ê³ ê° ìˆ˜ ë° êµ­ì œì „í™” ìš”ê¸ˆì œ ë³´ìœ  ìˆ˜
+SELECT company_name, location,
+       (SELECT COUNT(*) 
+        FROM Customer 
+        WHERE company.company_name = customer.company_name) AS num_emp,
+       (SELECT COUNT(*) 
+        FROM customer 
+        JOIN contact ON customer.contact_ID = contact.contact_ID 
+        WHERE international_plan = 'ìˆìŒ') AS num_int_plan
+FROM company 
+NATURAL JOIN customer 
+NATURAL JOIN contact 
+GROUP BY company_name, location;
 
-select name, area_code,phone_number,salary from customer natural join contact where international_plan='°¡ÀÔ' and salary>=80000;
+-- íšŒì‚¬ ê¸°ì¤€ìœ¼ë¡œ ê³ ê° LEFT OUTER JOIN
+SELECT company_name, area_code, phone_number, name 
+FROM company 
+LEFT OUTER JOIN customer 
+ON company.company_name = customer.company_name;
 
-select name, area_code,phone_number from customer natural join company natural join contact where voice_mail_plan='°¡ÀÔ' and num_employee>=10000;
+-- íŠ¹ì • ì¡°ê±´ì˜ ê³ ê° ì •ë³´ ë·° ìƒì„±
+CREATE VIEW customer_plan AS
+SELECT area_code, phone_number, name, contact_ID, international_plan, voice_mail_plan
+FROM customer 
+NATURAL JOIN contact 
+WHERE international_plan = 'ìˆìŒ' 
+  AND voice_mail_plan = 'ìˆìŒ';
 
-select area_code,phone_number,sum(call_min),sum(international_call_min) from customer natural join monthlyusage group by area_code,phone_number;
+-- FK ì œì•½ ì¡°ê±´ ë•Œë¬¸ì— area_code ì§ì ‘ ë³€ê²½ì´ ì•ˆë  ìˆ˜ ìˆìŒ
+UPDATE customer 
+SET area_code = '031' 
+WHERE name = 'Srinivasan';  
+-- ì£¼ì„: monthlyusage í…Œì´ë¸”ì´ area_codeì™€ phone_numberë¥¼ ì™¸ë˜í‚¤ë¡œ ì‚¬ìš©í•˜ë¯€ë¡œ ì§ì ‘ ë³€ê²½ ì‹œ ì˜¤ë¥˜ ë°œìƒ ê°€ëŠ¥
 
-select area_code,phone_number,sum(call_min),sum(international_call_min) from customer natural join monthlyusage group by area_code, phone_number having sum(call_min)>=400;
-
-select * from (select area_code,phone_number,sum(call_min),sum(international_call_min) from customer natural join monthlyusage group by area_code, phone_number) as A where A.sum(call_min)>=400;
-
-select company_name,location,(select count(*) from Customer,company where company.company_name=customer.company_name) as num_emp, (select count('°¡ÀÔ') from customer,contact where Contact.contact_ID=customer.contact_ID) as num_int_plan from company natural join contact natural join customer group by company_name,location;
-
-select company_name,area_code,phone_number,name from Company left outer join customer on company.company_name=customer.company_name;
-
-create view customer_plan as
-select area_code,phone_number,name,contact_ID,international_plan,voice_mail_plan
-from customer natural join contact
-where international_plan='¹Ì°¡ÀÔ' and voice_mail_plan='¹Ì°¡ÀÔ';
-
-update customer set area_code='031' where name='Srinivasan' 
-// monthlyusage relationÀÌ customer relationÀÇ area_code ¼Ó¼ºÀ» foreign key·Î ÂüÁ¶ÇÏ°í ÀÖ±â ¶§¹®¿¡ ¹Ù²ÙÁö ¸øÇÑ´Ù.
-
-update company set company_name='Kakao mobile' where company_name='Kakao';
-//customer Å×ÀÌºí¿¡ update,delete cascade actionÀ» Ãß°¡Çß±â ¶§¹®¿¡ company_nameÀ» ¹Ù²Ù°Å³ª »èÁ¦ÇØµµ ´Ù¸¥ ÂüÁ¶ÇÏ´Â°Í±îÁö ¶È°°ÀÌ ¹Ù²î°Å³ª »èÁ¦µÈ´Ù. 
-
-
+-- company_name ë³€ê²½ ì‹œ CASCADEë¡œ ê³ ê° í…Œì´ë¸”ì—ë„ ì ìš©ë¨
+UPDATE company 
+SET company_name = 'Kakao mobile' 
+WHERE company_name = 'Kakao';  
+-- ì£¼ì„: customer í…Œì´ë¸”ì— ON UPDATE CASCADE ì„¤ì •ì´ ìˆìœ¼ë¯€ë¡œ, í•´ë‹¹ ë³€ê²½ì´ ìë™ ì „íŒŒë¨
