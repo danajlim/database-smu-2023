@@ -1,44 +1,69 @@
-select custid, (select count(*) from Orders where Customer.custid=Orders.custid) as 도서수량, (select sum(saleprice) from Orders where Customer.custid=Orders.custid) as 총액
-from Customer
-group by custid;
+-- 고객별 주문한 도서 수량과 총액 조회
+SELECT custid, 
+       (SELECT COUNT(*) FROM Orders WHERE Customer.custid = Orders.custid) AS 도서수량,
+       (SELECT SUM(saleprice) FROM Orders WHERE Customer.custid = Orders.custid) AS 총액
+FROM Customer
+GROUP BY custid;
 
-insert into Book
-values('11','스포츠의학','한솔의학서적',90000);
+-- 새로운 도서 등록
+INSERT INTO Book
+VALUES ('11', '스포츠의학', '한솔의학서적', 90000);
 
-update customer
-set address='대한민국 부산'
-where custid='5';
+-- 고객 ID가 '5'인 고객의 주소를 '대한민국 부산'으로 변경
+UPDATE Customer
+SET address = '대한민국 부산'
+WHERE custid = '5';
 
-update customer 
-set address=(select address from Customer where name='김연아')
-where name='박세리';
+-- '박세리' 고객의 주소를 '김연아' 고객의 주소로 변경
+UPDATE Customer 
+SET address = (SELECT address FROM Customer WHERE name = '김연아')
+WHERE name = '박세리';
 
-delete from Customer
-where custid='5'
+-- 고객 ID가 '5'인 고객 삭제 시도 (Orders에서 참조 중이면 삭제 불가)
+DELETE FROM Customer
+WHERE custid = '5';
 
-custid가 orders에서 reference되고 있기 때문에 삭제가 되지 않는다.
+-- Orders 테이블 생성 (외래키 제약 조건 포함)
+CREATE TABLE Orders (
+    orderid    VARCHAR(2),
+    custid     VARCHAR(1),
+    bookid     VARCHAR(2),
+    saleprice  NUMERIC(5,0),
+    orderdate  VARCHAR(10),
+    PRIMARY KEY (orderid),
+    FOREIGN KEY (custid) REFERENCES Customer(custid),
+    FOREIGN KEY (bookid) REFERENCES Book(bookid)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
 
-create table Orders(
-orderid varchar (2),
-custid varchar (1),
-bookid varchar (2),
-saleprice numeric (5,0),
-orderdate varchar (10),
-primary key (orderid),
-foreign key (custid) references Customer (custid),
-foreign key (bookid) references Book (bookid)
-on delete cascade
-on update cascade);
+-- 이름이 '박지성'인 고객 삭제
+DELETE FROM Customer 
+WHERE name = '박지성';
 
-Delete from customer where name='박지성';
+-- '김연아'의 custid를 '12'로 수정
+UPDATE Customer 
+SET custid = '12' 
+WHERE name = '김연아';
 
-update Customer set custid=’12' where name='김연아';
+-- 출판사가 '굿스포츠'인 도서 삭제
+DELETE FROM Book 
+WHERE publisher = '굿스포츠';
 
-Delete from Book where publisher='굿스포츠'
+-- 고객과 주문 LEFT OUTER JOIN
+SELECT * 
+FROM Customer 
+LEFT OUTER JOIN Orders 
+ON Customer.custid = Orders.custid;
 
-select * from customer left outer join orders on customer.custid=orders.custid;
+-- 고객과 주문 RIGHT OUTER JOIN
+SELECT * 
+FROM Customer 
+RIGHT OUTER JOIN Orders 
+ON Customer.custid = Orders.custid;
 
-select * from Customer right outer join orders on customer.custid=orders.custid;
-
-select name,saleprice
-from customer right outer join orders on customer.custid=orders.custid;
+-- RIGHT OUTER JOIN 후 고객 이름과 판매가만 출력
+SELECT name, saleprice
+FROM Customer 
+RIGHT OUTER JOIN Orders 
+ON Customer.custid = Orders.custid;
