@@ -1,4 +1,5 @@
-create table movie (
+-- Create movie table
+CREATE TABLE movie (
     id           char(3), 
     title        varchar (100), 
     company      varchar (50),
@@ -8,4 +9,5 @@ create table movie (
     profit       numeric (15,2),
     totalnum     int,
     grade        varchar (50),
-    primary key (id));
+    primary key (id)
+);
