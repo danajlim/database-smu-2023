@@ -1,177 +1,202 @@
-drop database db2;
-create database db2;
-use db2;
+-- 기존 데이터베이스 삭제
+DROP DATABASE db2;
 
-create table department (
-    dept_name       varchar (20), 
-    building        varchar (15), 
-    budget          numeric (12,2),
-    primary key (dept_name));
+-- 새 데이터베이스 생성
+CREATE DATABASE db2;
 
-create table instructor (
-    ID              char(5),
-    name            varchar(20) not null,
-    dept_name       varchar(20),    
-    salary          numeric(8,2),
-    primary key (ID),
-    foreign key (dept_name) references  department (dept_name));
-    
-create table course (
-    course_id       varchar(8) primary key,
-    title           varchar(50),
-    dept_name       varchar(20),
-    credits         numeric(2,0),
-    foreign key    (dept_name) references department (dept_name)); 
-    
-create table section (
-    course_id        varchar(8),
-    sec_id           varchar(8),
-    semester         varchar(6),
-    year             numeric(4,0),
-    building         varchar(15),
-    room_number      varchar(7),
-    tile_slod_id     varchar(4),
-    primary key  (course_id, sec_id, semester, year),
-    foreign key  (course_id) references course (course_id));
+-- 사용할 데이터베이스 선택
+USE db2;
 
-create table teaches (
-    ID               varchar(5),
-    course_id        varchar(8),
-    sec_id           varchar(8),
-    semester         varchar(6),
-    year             numeric(4,0),
-    primary key  (ID, course_id, sec_id, semester, year),
-    foreign key   (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year),
-    foreign key   (ID)  references instructor(ID));
+-- 학과 테이블 생성
+CREATE TABLE department (
+    dept_name       VARCHAR(20), 
+    building        VARCHAR(15), 
+    budget          NUMERIC(12,2),
+    PRIMARY KEY (dept_name)
+);
 
-create table student (
-    ID               varchar(5) primary key,
-    name             varchar(20) not null,
-    dept_name        varchar(20),
-    tot_cred         numeric(3,0),
-    foreign key    (dept_name) references department (dept_name));
+-- 교수 테이블 생성
+CREATE TABLE instructor (
+    ID              CHAR(5),
+    name            VARCHAR(20) NOT NULL,
+    dept_name       VARCHAR(20),    
+    salary          NUMERIC(8,2),
+    PRIMARY KEY (ID),
+    FOREIGN KEY (dept_name) REFERENCES department(dept_name)
+);
 
-create table takes (
-    ID              varchar(5),
-    course_id       varchar(8),
-    sec_id          varchar(8),
-    semester        varchar(6),
-    year            numeric(4,0),
-    grade           varchar(2),
-    primary key  (ID, course_id, sec_id, semester, year),
-    foreign key (ID) references  student (ID),
-    foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year) );
-    
-insert into department values ('Biology',    'Watson',  90000);
-insert into department values ('Comp. Sci.', 'Taylor',  100000);
-insert into department values ('Elec. Eng.', 'Taylor',  85000);
-insert into department values ('Finance',    'Painter', 120000);
-insert into department values ('History',    'Painter', 50000);
-insert into department values ('Music',      'Packard', 80000);
-insert into department values ('Physics',    'Watson',  70000);    
+-- 강의 과목 테이블 생성
+CREATE TABLE course (
+    course_id       VARCHAR(8) PRIMARY KEY,
+    title           VARCHAR(50),
+    dept_name       VARCHAR(20),
+    credits         NUMERIC(2,0),
+    FOREIGN KEY (dept_name) REFERENCES department(dept_name)
+);
 
-insert into instructor values ('10101', 'Srinivasan', 'Comp. Sci.', 65000);
-insert into instructor values ('12121', 'Wu',         'Finance',    90000);
-insert into instructor values ('15151', 'Mozart',     'Music',      40000);
-insert into instructor values ('22222', 'Einstein',   'Physics',    95000);
-insert into instructor values ('32343', 'El Said',    'History',    60000);
-insert into instructor values ('33456', 'Gold',       'Physics',    87000);
-insert into instructor values ('45565', 'Katz',       'Comp. Sci.', 75000);
-insert into instructor values ('58583', 'Califieri',  'History',    62000);
-insert into instructor values ('76543', 'Singh',      'Finance',    80000);
-insert into instructor values ('76766', 'Crick',      'Biology',    72000);
-insert into instructor values ('83821', 'Brandt',     'Comp. Sci.', 80000);    
-insert into instructor values ('98345', 'Kim',        'Elec. Eng.', 80000);    
+-- 강의 섹션 테이블 생성
+CREATE TABLE section (
+    course_id        VARCHAR(8),
+    sec_id           VARCHAR(8),
+    semester         VARCHAR(6),
+    year             NUMERIC(4,0),
+    building         VARCHAR(15),
+    room_number      VARCHAR(7),
+    tile_slod_id     VARCHAR(4),
+    PRIMARY KEY (course_id, sec_id, semester, year),
+    FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
 
-insert into course values ('BIO-101', 'Intro. to Biology',         'Biology',    4);
-insert into course values ('BIO-301', 'Genetics',                  'Biology',    4);
-insert into course values ('BIO-399', 'Computational Biology',     'Biology',    3);
-insert into course values ('CS-101',  'Intro. to CS',              'Comp. Sci.', 4);
-insert into course values ('CS-190',  'Game Design',               'Comp. Sci.', 4);
-insert into course values ('CS-315',  'Robotics',                  'Comp. Sci.', 3);
-insert into course values ('CS-319',  'Image Processing',          'Comp. Sci.', 3);
-insert into course values ('CS-347',  'Database System',           'Comp. Sci.', 3);
-insert into course values ('EE-181',  'Intro. to Digital Systems', 'Elec. Eng.', 3);
-insert into course values ('FIN-201', 'Investment Banking',        'Finance',    3);
-insert into course values ('HIS-351', 'World History',             'History',    3);
-insert into course values ('MU-199',  'Music Video Production',    'Music',      3);
-insert into course values ('PHY-101', 'Physical Principles',       'Physics',    4);
+-- 강의 담당 교수 테이블 생성
+CREATE TABLE teaches (
+    ID               VARCHAR(5),
+    course_id        VARCHAR(8),
+    sec_id           VARCHAR(8),
+    semester         VARCHAR(6),
+    year             NUMERIC(4,0),
+    PRIMARY KEY (ID, course_id, sec_id, semester, year),
+    FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section(course_id, sec_id, semester, year),
+    FOREIGN KEY (ID) REFERENCES instructor(ID)
+);
 
-insert into section values ('BIO-101', '1', 'Summer', 2009, 'Painter', '514', 'B');
-insert into section values ('BIO-301', '1', 'Summer', 2010, 'Painter', '514', 'A');
-insert into section values ('CS-101',  '1', 'Fall',   2009, 'Packard', '101', 'H');
-insert into section values ('CS-101',  '1', 'Spring', 2010, 'Packard', '101', 'F');
-insert into section values ('CS-190',  '1', 'Spring', 2009, 'Taylor', ' 3128','E');
-insert into section values ('CS-190',  '2', 'Spring', 2009, 'Taylor',  '3128','A');
-insert into section values ('CS-315',  '1', 'Spring', 2010, 'Watson',  '120', 'D');
-insert into section values ('CS-319',  '1', 'Spring', 2010, 'Watson',  '100', 'B');
-insert into section values ('CS-319',  '2', 'Spring', 2010, 'Taylor',  '3128','C');
-insert into section values ('CS-347',  '1', 'Fall',   2009, 'Taylor',  '3128','A');
-insert into section values ('EE-181',  '1', 'Spring', 2009, 'Taylor',  '3128','C');
-insert into section values ('FIN-201', '1', 'Spring', 2010, 'Packard', '101',' B');
-insert into section values ('HIS-351', '1', 'Spring', 2010, 'Painter', '514',' D');
-insert into section values ('MU-199',  '1', 'Spring', 2010, 'Packard', '101',' D');
-insert into section values ('PHY-101' ,'1', 'Fall',   2009, 'Watson',  '100',' A');
+-- 학생 테이블 생성
+CREATE TABLE student (
+    ID               VARCHAR(5) PRIMARY KEY,
+    name             VARCHAR(20) NOT NULL,
+    dept_name        VARCHAR(20),
+    tot_cred         NUMERIC(3,0),
+    FOREIGN KEY (dept_name) REFERENCES department(dept_name)
+);
 
-insert into teaches values ('10101', 'CS-101',  1, 'Fall',   2009);
-insert into teaches values ('10101', 'CS-315',  1, 'Spring', 2010);
-insert into teaches values ('10101', 'CS-347',  1, 'Fall',   2009);
-insert into teaches values ('12121', 'FIN-201', 1, 'Spring', 2010);
-insert into teaches values ('15151', 'MU-199',  1, 'Spring', 2010);
-insert into teaches values ('22222', 'PHY-101', 1, 'Fall',   2009);
-insert into teaches values ('32343', 'HIS-351', 1, 'Spring', 2010);
-insert into teaches values ('45565', 'CS-101',  1, 'Spring', 2010);
-insert into teaches values ('45565', 'CS-319',  1, 'Spring', 2010);
-insert into teaches values ('76766', 'BIO-101', 1, 'Summer', 2009);
-insert into teaches values ('76766', 'BIO-301', 1, 'Summer', 2010);
-insert into teaches values ('83821', 'CS-190',  1, 'Spring', 2009);
-insert into teaches values ('83821', 'CS-190',  2, 'Spring', 2009);
-insert into teaches values ('83821', 'CS-319',  2, 'Spring', 2010);
-insert into teaches values ('98345', 'EE-181',  1, 'Spring', 2009);
+-- 수강 내역 테이블 생성
+CREATE TABLE takes (
+    ID              VARCHAR(5),
+    course_id       VARCHAR(8),
+    sec_id          VARCHAR(8),
+    semester        VARCHAR(6),
+    year            NUMERIC(4,0),
+    grade           VARCHAR(2),
+    PRIMARY KEY (ID, course_id, sec_id, semester, year),
+    FOREIGN KEY (ID) REFERENCES student(ID),
+    FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section(course_id, sec_id, semester, year)
+);
 
-insert into student values ('00128', 'Zhang',     'Comp. Sci.', 102);
-insert into student values ('12345', 'Shankar',    'Comp. Sci.', 32);
-insert into student values ('19991', 'Brandt',    'History',    80);
-insert into student values ('23121', 'Chavez',    'Finance',    120);
-insert into student values ('44553', 'Peltier',   'Physics',    56);
-insert into student values ('45678', 'Levy',      'Physics',    46);
-insert into student values ('54321', 'Williams',  'Comp. Sci.', 54);
-insert into student values ('55739', 'Sanchez',   'Music',      38);
-insert into student values ('70557', 'Snow',      'Physics',    0);
-insert into student values ('76543', 'Brown',     'Comp. Sci.', 58);
-insert into student values ('76653', 'Aoi',       'Elec. Eng.', 60);
-insert into student values ('98765', 'Bourikas',  'Elec. Eng.', 98);
-insert into student values ('98988', 'Tanaka',    'Biology',    120);
+-- 학과 데이터 삽입
+INSERT INTO department VALUES ('Biology',    'Watson',  90000);
+INSERT INTO department VALUES ('Comp. Sci.', 'Taylor',  100000);
+INSERT INTO department VALUES ('Elec. Eng.', 'Taylor',  85000);
+INSERT INTO department VALUES ('Finance',    'Painter', 120000);
+INSERT INTO department VALUES ('History',    'Painter', 50000);
+INSERT INTO department VALUES ('Music',      'Packard', 80000);
+INSERT INTO department VALUES ('Physics',    'Watson',  70000);
 
-insert into takes values ('00128', 'CS-101',    '1', 'Fall',   2009, 'A');
-insert into takes values ('00128', 'CS-347',    '1', 'Fall',   2009, 'A-');
-insert into takes values ('12345', 'CS-101',    '1', 'Fall',   2009, 'C');
-insert into takes values ('12345', 'CS-190',    '2', 'Spring', 2009, 'A');
-insert into takes values ('12345', 'CS-315',    '1', 'Spring', 2010, 'A');
-insert into takes values ('12345', 'CS-347',    '1', 'Fall',   2009, 'B');
-insert into takes values ('19991', 'HIS-351',   '1', 'Spring', 2010, 'B');
-insert into takes values ('23121', 'FIN-201',   '1', 'Spring', 2010, 'C+');
-insert into takes values ('44553', 'PHY-101',   '1', 'Fall',   2009, 'B-');
-insert into takes values ('45678', 'CS-101',    '1', 'Fall',   2009, 'F');
-insert into takes values ('45678', 'CS-101',    '1', 'Spring', 2010, 'B+');
-insert into takes values ('45678', 'CS-319',    '1', 'Spring', 2010, 'B');
+-- 교수 데이터 삽입
+INSERT INTO instructor VALUES ('10101', 'Srinivasan', 'Comp. Sci.', 65000);
+INSERT INTO instructor VALUES ('12121', 'Wu',         'Finance',    90000);
+INSERT INTO instructor VALUES ('15151', 'Mozart',     'Music',      40000);
+INSERT INTO instructor VALUES ('22222', 'Einstein',   'Physics',    95000);
+INSERT INTO instructor VALUES ('32343', 'El Said',    'History',    60000);
+INSERT INTO instructor VALUES ('33456', 'Gold',       'Physics',    87000);
+INSERT INTO instructor VALUES ('45565', 'Katz',       'Comp. Sci.', 75000);
+INSERT INTO instructor VALUES ('58583', 'Califieri',  'History',    62000);
+INSERT INTO instructor VALUES ('76543', 'Singh',      'Finance',    80000);
+INSERT INTO instructor VALUES ('76766', 'Crick',      'Biology',    72000);
+INSERT INTO instructor VALUES ('83821', 'Brandt',     'Comp. Sci.', 80000);    
+INSERT INTO instructor VALUES ('98345', 'Kim',        'Elec. Eng.', 80000);
 
-insert into takes values ('54321', 'CS-101',    '1', 'Fall',   2009, 'A-');
-insert into takes values ('54321', 'CS-190',    '2', 'Spring', 2009, 'B+');
-insert into takes values ('55739', 'MU-199',    '1', 'Spring', 2010, 'A-');
-insert into takes values ('76543', 'CS-101',    '1', 'Fall',   2009, 'A');
-insert into takes values ('76543', 'CS-319',    '2', 'Spring', 2010, 'A');
-insert into takes values ('76653', 'EE-181',    '1', 'Spring', 2009, 'C');
-insert into takes values ('98765', 'CS-101',    '1', 'Fall',   2009, 'C-');
-insert into takes values ('98765', 'CS-315',    '1', 'Spring', 2010, 'B');
-insert into takes values ('98988', 'BIO-101',   '1', 'Summer', 2009, 'A');
-insert into takes values ('98988', 'BIO-301',   '1', 'Summer', 2010, null);
+-- 강의 과목 데이터 삽입
+INSERT INTO course VALUES ('BIO-101', 'Intro. to Biology',         'Biology',    4);
+INSERT INTO course VALUES ('BIO-301', 'Genetics',                  'Biology',    4);
+INSERT INTO course VALUES ('BIO-399', 'Computational Biology',     'Biology',    3);
+INSERT INTO course VALUES ('CS-101',  'Intro. to CS',              'Comp. Sci.', 4);
+INSERT INTO course VALUES ('CS-190',  'Game Design',               'Comp. Sci.', 4);
+INSERT INTO course VALUES ('CS-315',  'Robotics',                  'Comp. Sci.', 3);
+INSERT INTO course VALUES ('CS-319',  'Image Processing',          'Comp. Sci.', 3);
+INSERT INTO course VALUES ('CS-347',  'Database System',           'Comp. Sci.', 3);
+INSERT INTO course VALUES ('EE-181',  'Intro. to Digital Systems', 'Elec. Eng.', 3);
+INSERT INTO course VALUES ('FIN-201', 'Investment Banking',        'Finance',    3);
+INSERT INTO course VALUES ('HIS-351', 'World History',             'History',    3);
+INSERT INTO course VALUES ('MU-199',  'Music Video Production',    'Music',      3);
+INSERT INTO course VALUES ('PHY-101', 'Physical Principles',       'Physics',    4);
 
-select * from department;
-select * from instructor;
-select * from course;    
-select * from section;    
-select * from teaches;   
-select * from student;
-select * from takes;
+-- 섹션 데이터 삽입
+INSERT INTO section VALUES ('BIO-101', '1', 'Summer', 2009, 'Painter', '514', 'B');
+INSERT INTO section VALUES ('BIO-301', '1', 'Summer', 2010, 'Painter', '514', 'A');
+INSERT INTO section VALUES ('CS-101',  '1', 'Fall',   2009, 'Packard', '101', 'H');
+INSERT INTO section VALUES ('CS-101',  '1', 'Spring', 2010, 'Packard', '101', 'F');
+INSERT INTO section VALUES ('CS-190',  '1', 'Spring', 2009, 'Taylor',  '3128', 'E');
+INSERT INTO section VALUES ('CS-190',  '2', 'Spring', 2009, 'Taylor',  '3128', 'A');
+INSERT INTO section VALUES ('CS-315',  '1', 'Spring', 2010, 'Watson',  '120',  'D');
+INSERT INTO section VALUES ('CS-319',  '1', 'Spring', 2010, 'Watson',  '100',  'B');
+INSERT INTO section VALUES ('CS-319',  '2', 'Spring', 2010, 'Taylor',  '3128', 'C');
+INSERT INTO section VALUES ('CS-347',  '1', 'Fall',   2009, 'Taylor',  '3128', 'A');
+INSERT INTO section VALUES ('EE-181',  '1', 'Spring', 2009, 'Taylor',  '3128', 'C');
+INSERT INTO section VALUES ('FIN-201', '1', 'Spring', 2010, 'Packard', '101',  'B');
+INSERT INTO section VALUES ('HIS-351', '1', 'Spring', 2010, 'Painter', '514',  'D');
+INSERT INTO section VALUES ('MU-199',  '1', 'Spring', 2010, 'Packard', '101',  'D');
+INSERT INTO section VALUES ('PHY-101', '1', 'Fall',   2009, 'Watson',  '100',  'A');
 
+-- 강의 담당 교수 데이터 삽입
+INSERT INTO teaches VALUES ('10101', 'CS-101',  '1', 'Fall',   2009);
+INSERT INTO teaches VALUES ('10101', 'CS-315',  '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('10101', 'CS-347',  '1', 'Fall',   2009);
+INSERT INTO teaches VALUES ('12121', 'FIN-201', '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('15151', 'MU-199',  '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('22222', 'PHY-101', '1', 'Fall',   2009);
+INSERT INTO teaches VALUES ('32343', 'HIS-351', '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('45565', 'CS-101',  '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('45565', 'CS-319',  '1', 'Spring', 2010);
+INSERT INTO teaches VALUES ('76766', 'BIO-101', '1', 'Summer', 2009);
+INSERT INTO teaches VALUES ('76766', 'BIO-301', '1', 'Summer', 2010);
+INSERT INTO teaches VALUES ('83821', 'CS-190',  '1', 'Spring', 2009);
+INSERT INTO teaches VALUES ('83821', 'CS-190',  '2', 'Spring', 2009);
+INSERT INTO teaches VALUES ('83821', 'CS-319',  '2', 'Spring', 2010);
+INSERT INTO teaches VALUES ('98345', 'EE-181',  '1', 'Spring', 2009);
+
+-- 학생 데이터 삽입
+INSERT INTO student VALUES ('00128', 'Zhang',     'Comp. Sci.', 102);
+INSERT INTO student VALUES ('12345', 'Shankar',   'Comp. Sci.', 32);
+INSERT INTO student VALUES ('19991', 'Brandt',    'History',    80);
+INSERT INTO student VALUES ('23121', 'Chavez',    'Finance',    120);
+INSERT INTO student VALUES ('44553', 'Peltier',   'Physics',    56);
+INSERT INTO student VALUES ('45678', 'Levy',      'Physics',    46);
+INSERT INTO student VALUES ('54321', 'Williams',  'Comp. Sci.', 54);
+INSERT INTO student VALUES ('55739', 'Sanchez',   'Music',      38);
+INSERT INTO student VALUES ('70557', 'Snow',      'Physics',    0);
+INSERT INTO student VALUES ('76543', 'Brown',     'Comp. Sci.', 58);
+INSERT INTO student VALUES ('76653', 'Aoi',       'Elec. Eng.', 60);
+INSERT INTO student VALUES ('98765', 'Bourikas',  'Elec. Eng.', 98);
+INSERT INTO student VALUES ('98988', 'Tanaka',    'Biology',    120);
+
+-- 수강 내역 데이터 삽입
+INSERT INTO takes VALUES ('00128', 'CS-101',  '1', 'Fall',   2009, 'A');
+INSERT INTO takes VALUES ('00128', 'CS-347',  '1', 'Fall',   2009, 'A-');
+INSERT INTO takes VALUES ('12345', 'CS-101',  '1', 'Fall',   2009, 'C');
+INSERT INTO takes VALUES ('12345', 'CS-190',  '2', 'Spring', 2009, 'A');
+INSERT INTO takes VALUES ('12345', 'CS-315',  '1', 'Spring', 2010, 'A');
+INSERT INTO takes VALUES ('12345', 'CS-347',  '1', 'Fall',   2009, 'B');
+INSERT INTO takes VALUES ('19991', 'HIS-351', '1', 'Spring', 2010, 'B');
+INSERT INTO takes VALUES ('23121', 'FIN-201', '1', 'Spring', 2010, 'C+');
+INSERT INTO takes VALUES ('44553', 'PHY-101', '1', 'Fall',   2009, 'B-');
+INSERT INTO takes VALUES ('45678', 'CS-101',  '1', 'Fall',   2009, 'F');
+INSERT INTO takes VALUES ('45678', 'CS-101',  '1', 'Spring', 2010, 'B+');
+INSERT INTO takes VALUES ('45678', 'CS-319',  '1', 'Spring', 2010, 'B');
+INSERT INTO takes VALUES ('54321', 'CS-101',  '1', 'Fall',   2009, 'A-');
+INSERT INTO takes VALUES ('54321', 'CS-190',  '2', 'Spring', 2009, 'B+');
+INSERT INTO takes VALUES ('55739', 'MU-199',  '1', 'Spring', 2010, 'A-');
+INSERT INTO takes VALUES ('76543', 'CS-101',  '1', 'Fall',   2009, 'A');
+INSERT INTO takes VALUES ('76543', 'CS-319',  '2', 'Spring', 2010, 'A');
+INSERT INTO takes VALUES ('76653', 'EE-181',  '1', 'Spring', 2009, 'C');
+INSERT INTO takes VALUES ('98765', 'CS-101',  '1', 'Fall',   2009, 'C-');
+INSERT INTO takes VALUES ('98765', 'CS-315',  '1', 'Spring', 2010, 'B');
+INSERT INTO takes VALUES ('98988', 'BIO-101', '1', 'Summer', 2009, 'A');
+INSERT INTO takes VALUES ('98988', 'BIO-301', '1', 'Summer', 2010, NULL);
+
+-- 모든 테이블 조회
+SELECT * FROM department;
+SELECT * FROM instructor;
+SELECT * FROM course;    
+SELECT * FROM section;    
+SELECT * FROM teaches;   
+SELECT * FROM student;
+SELECT * FROM takes;
